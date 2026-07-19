@@ -5,6 +5,8 @@ input=$(cat)
 used=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0')
 window_size=$(echo "$input" | jq -r '.context_window.context_window_size // 0')
 model=$(echo "$input" | jq -r '.model.display_name // empty')
+five_h_pct=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
+five_h_resets_at=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
 
 if [ -z "$window_size" ] || [ "$window_size" = "0" ] || [ "$window_size" = "null" ]; then
   printf "Smart Context: n/a"
@@ -55,4 +57,20 @@ else
   model_part=""
 fi
 
-printf "${model_part}${SLATE_BLUE}Smart Context: ${used_color}%s${SLATE_BLUE}/%s tokens (%s%%)${RESET}" "$used_fmt" "$total_fmt" "$pct_fmt"
+if [ -n "$five_h_pct" ] && [ "$five_h_pct" != "null" ]; then
+  five_h_pct_fmt=$(awk -v p="$five_h_pct" 'BEGIN { printf "%.0f", p }')
+  if [ -n "$five_h_resets_at" ] && [ "$five_h_resets_at" != "null" ]; then
+    five_h_left_fmt=$(awk -v r="$five_h_resets_at" 'BEGIN {
+      diff = r - systime(); if (diff < 0) diff = 0
+      h = int(diff/3600); m = int((diff%3600)/60)
+      if (h > 0) { printf "%dh %dm", h, m } else { printf "%dm", m }
+    }')
+    rate_part=$(printf "${WHITE} | ${SLATE_BLUE}5h limit: %s%% (%s left)" "$five_h_pct_fmt" "$five_h_left_fmt")
+  else
+    rate_part=$(printf "${WHITE} | ${SLATE_BLUE}5h limit: %s%%" "$five_h_pct_fmt")
+  fi
+else
+  rate_part=""
+fi
+
+printf "${model_part}${SLATE_BLUE}Smart Context: ${used_color}%s${SLATE_BLUE}/%s tokens (%s%%)%s${RESET}" "$used_fmt" "$total_fmt" "$pct_fmt" "$rate_part"
