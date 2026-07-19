@@ -21,11 +21,12 @@ GREEN_BELOW=100000          # used < this          -> green
 ORANGE_BELOW=140000         # this <= used < below -> orange; used >= this -> red
 # -------------------------------------------------------------------------------
 
-YELLOW="\033[33m"
+WHITE="\033[37m"
 GREEN="\033[32m"
 ORANGE="\033[38;5;208m"
 RED="\033[31m"
 CLAUDE_ORANGE="\033[38;2;218;119;86m"
+SLATE_BLUE="\033[38;2;108;113;196m"
 RESET="\033[0m"
 
 used_fmt=$(fmt_k "$used")
@@ -41,9 +42,9 @@ else
 fi
 
 if [ -n "$model" ]; then
-  model_part="${CLAUDE_ORANGE}[$model]${YELLOW} | "
+  model_part="${CLAUDE_ORANGE}[$model]${WHITE} | "
 else
   model_part=""
 fi
 
-printf "${model_part}${YELLOW}Smart Context: ${used_color}%s${YELLOW}/%s tokens (%s%%)${RESET}" "$used_fmt" "$total_fmt" "$pct_fmt"
+printf "${model_part}${SLATE_BLUE}Smart Context: ${used_color}%s${SLATE_BLUE}/%s tokens (%s%%)${RESET}" "$used_fmt" "$total_fmt" "$pct_fmt"
