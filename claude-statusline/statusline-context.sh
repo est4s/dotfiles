@@ -15,16 +15,14 @@ fmt_k() {
   awk -v n="$1" 'BEGIN { printf "%.1fk", n/1000 }'
 }
 
-# ---- Smart context budget & used-token color thresholds (edit these to adjust) ----
+# ---- Smart context budget & used-token gradient stops (edit these to adjust) ----
 SMART_CONTEXT_LIMIT=140000  # smart context budget shown as the denominator; used can exceed it
-GREEN_BELOW=100000          # used < this          -> green
-ORANGE_BELOW=140000         # this <= used < below -> orange; used >= this -> red
-# -------------------------------------------------------------------------------
+GREEN_AT=0                  # used <= this          -> pure green
+ORANGE_AT=100000            # used at this point     -> pure orange (midpoint of gradient)
+RED_AT=140000               # used >= this           -> pure red
+# ----------------------------------------------------------------------------
 
 WHITE="\033[37m"
-GREEN="\033[32m"
-ORANGE="\033[38;5;208m"
-RED="\033[31m"
 CLAUDE_ORANGE="\033[38;2;218;119;86m"
 SLATE_BLUE="\033[38;2;108;113;196m"
 RESET="\033[0m"
@@ -33,13 +31,23 @@ used_fmt=$(fmt_k "$used")
 total_fmt=$(fmt_k "$SMART_CONTEXT_LIMIT")
 pct_fmt=$(awk -v u="$used" -v t="$SMART_CONTEXT_LIMIT" 'BEGIN { printf "%.0f", (u/t)*100 }')
 
-if [ "$used" -lt "$GREEN_BELOW" ] 2>/dev/null; then
-  used_color="$GREEN"
-elif [ "$used" -lt "$ORANGE_BELOW" ] 2>/dev/null; then
-  used_color="$ORANGE"
-else
-  used_color="$RED"
-fi
+# Gradient: green -> orange -> red, interpolated smoothly by used-token count.
+used_color=$(awk -v u="$used" -v g_at="$GREEN_AT" -v o_at="$ORANGE_AT" -v r_at="$RED_AT" 'BEGIN {
+  gr=0;   gg=200; gb=0
+  orr=255; org=135; orb=0
+  rr=220; rg=20;  rb=20
+  if (u <= g_at) { r=gr; g=gg; b=gb }
+  else if (u < o_at) {
+    t = (u-g_at) / (o_at-g_at)
+    r = gr  + (orr-gr)*t;  g = gg  + (org-gg)*t;  b = gb  + (orb-gb)*t
+  } else if (u < r_at) {
+    t = (u-o_at) / (r_at-o_at)
+    r = orr + (rr-orr)*t;  g = org + (rg-org)*t;  b = orb + (rb-orb)*t
+  } else {
+    r=rr; g=rg; b=rb
+  }
+  printf "\033[38;2;%d;%d;%dm", r, g, b
+}')
 
 if [ -n "$model" ]; then
   model_part="${CLAUDE_ORANGE}[$model]${WHITE} | "
