@@ -1,10 +1,11 @@
 #!/bin/bash
-# Claude Code status line: shows context window usage only.
+# Claude Code status line: shows model name and context window usage.
 input=$(cat)
 
 used=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0')
 total=$(echo "$input" | jq -r '.context_window.context_window_size // 0')
 pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
+model=$(echo "$input" | jq -r '.model.display_name // empty')
 
 if [ -z "$total" ] || [ "$total" = "0" ] || [ "$total" = "null" ]; then
   printf "Context: n/a"
@@ -37,9 +38,15 @@ else
   used_color="$RED"
 fi
 
+if [ -n "$model" ]; then
+  model_part="${YELLOW}[$model] "
+else
+  model_part=""
+fi
+
 if [ -n "$pct" ] && [ "$pct" != "null" ]; then
   pct_fmt=$(awk -v p="$pct" 'BEGIN { printf "%.0f", p }')
-  printf "${YELLOW}Context: ${used_color}%s${YELLOW}/%s tokens (%s%%)${RESET}" "$used_fmt" "$total_fmt" "$pct_fmt"
+  printf "${model_part}${YELLOW}Context: ${used_color}%s${YELLOW}/%s tokens (%s%%)${RESET}" "$used_fmt" "$total_fmt" "$pct_fmt"
 else
-  printf "${YELLOW}Context: ${used_color}%s${YELLOW}/%s tokens${RESET}" "$used_fmt" "$total_fmt"
+  printf "${model_part}${YELLOW}Context: ${used_color}%s${YELLOW}/%s tokens${RESET}" "$used_fmt" "$total_fmt"
 fi
