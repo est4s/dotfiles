@@ -16,8 +16,8 @@ fmt_k() {
 }
 
 # ---- Used-token color thresholds (edit these to adjust) ----
-GREEN_BELOW=75000    # used < this          -> green
-ORANGE_BELOW=100000  # this <= used < below -> orange; used >= this -> red
+GREEN_BELOW=100000   # used < this          -> green
+ORANGE_BELOW=140000  # this <= used < below -> orange; used >= this -> red
 # --------------------------------------------------------------
 
 YELLOW="\033[33m"
