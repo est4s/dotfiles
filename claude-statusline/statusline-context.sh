@@ -25,7 +25,7 @@ YELLOW="\033[33m"
 GREEN="\033[32m"
 ORANGE="\033[38;5;208m"
 RED="\033[31m"
-PURPLE="\033[35m"
+TEAL="\033[36m"
 RESET="\033[0m"
 
 used_fmt=$(fmt_k "$used")
@@ -40,7 +40,7 @@ else
 fi
 
 if [ -n "$model" ]; then
-  model_part="${PURPLE}[$model] "
+  model_part="${TEAL}[$model] "
 else
   model_part=""
 fi
