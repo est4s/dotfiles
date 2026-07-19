@@ -15,17 +15,26 @@ fmt_k() {
   awk -v n="$1" 'BEGIN { printf "%.1fk", n/1000 }'
 }
 
+# ---- Used-token color thresholds (edit these to adjust) ----
+GREEN_BELOW=75000    # used < this          -> green
+ORANGE_BELOW=100000  # this <= used < below -> orange; used >= this -> red
+# --------------------------------------------------------------
+
 YELLOW="\033[33m"
+GREEN="\033[32m"
+ORANGE="\033[38;5;208m"
 RED="\033[31m"
 RESET="\033[0m"
 
 used_fmt=$(fmt_k "$used")
 total_fmt=$(fmt_k "$total")
 
-if [ "$used" -gt 100000 ] 2>/dev/null; then
-  used_color="$RED"
+if [ "$used" -lt "$GREEN_BELOW" ] 2>/dev/null; then
+  used_color="$GREEN"
+elif [ "$used" -lt "$ORANGE_BELOW" ] 2>/dev/null; then
+  used_color="$ORANGE"
 else
-  used_color="$YELLOW"
+  used_color="$RED"
 fi
 
 if [ -n "$pct" ] && [ "$pct" != "null" ]; then
