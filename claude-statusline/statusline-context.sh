@@ -78,4 +78,4 @@ else
   rate_part=""
 fi
 
-printf "${model_part}${SLATE_BLUE}Smart Context: ${used_color}%s${WHITE}/%s tokens ${used_color}(%s%%)%s${RESET}" "$used_fmt" "$total_fmt" "$pct_fmt" "$rate_part"
+printf "${model_part}${SLATE_BLUE}Smart Context: ${used_color}%s${WHITE}/%s ${used_color}(%s%%)%s${RESET}" "$used_fmt" "$total_fmt" "$pct_fmt" "$rate_part"
