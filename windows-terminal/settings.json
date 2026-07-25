@@ -60,27 +60,27 @@
     "profiles": 
     {
         "defaults": {},
-        "list": 
+        "list":
         [
             {
-                "colorScheme": "Solarized Dark",
+                "colorScheme": "Synthwave",
                 "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
                 "hidden": false,
                 "name": "Windows PowerShell",
-                "opacity": 92
+                "opacity": 95
             },
             {
-                "colorScheme": "Solarized Dark",
+                "colorScheme": "Synthwave",
                 "commandline": "%SystemRoot%\\System32\\cmd.exe",
-                "font": 
+                "font":
                 {
                     "face": "Cascadia Code"
                 },
                 "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
                 "hidden": false,
                 "name": "Command Prompt",
-                "opacity": 92
+                "opacity": 95
             },
             {
                 "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
@@ -90,6 +90,31 @@
             }
         ]
     },
-    "schemes": [],
+    "schemes":
+    [
+        {
+            "name": "Synthwave",
+            "background": "#2A2139",
+            "foreground": "#F4EEE4",
+            "cursorColor": "#FFFFFF",
+            "selectionBackground": "#4C3A6E",
+            "black": "#181521",
+            "red": "#FE4450",
+            "green": "#72F1B8",
+            "yellow": "#FEDE5D",
+            "blue": "#03EDF9",
+            "purple": "#FF7EDB",
+            "cyan": "#03EDF9",
+            "white": "#F4EEE4",
+            "brightBlack": "#495495",
+            "brightRed": "#FE4450",
+            "brightGreen": "#72F1B8",
+            "brightYellow": "#F3E70F",
+            "brightBlue": "#36F9F6",
+            "brightPurple": "#FF7EDB",
+            "brightCyan": "#36F9F6",
+            "brightWhite": "#FFFFFF"
+        }
+    ],
     "themes": []
 }

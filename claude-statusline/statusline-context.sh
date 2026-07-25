@@ -24,18 +24,18 @@ ORANGE_AT=100000            # used at this point     -> pure orange (midpoint of
 RED_AT=140000               # used >= this           -> pure hot red
 # ----------------------------------------------------------------------------
 
-WHITE="\033[37m"
-CLAUDE_ORANGE="\033[38;2;218;119;86m"
-SLATE_BLUE="\033[38;2;108;113;196m"
+WHITE="\033[38;2;228;238;244m"
+CLAUDE_ORANGE="\033[38;2;255;126;219m"
+SLATE_BLUE="\033[38;2;185;103;255m"
 RESET="\033[0m"
 
-# Truecolor gradient: green -> orange -> hot red, interpolated smoothly by value.
+# Truecolor gradient: neon cyan -> hot pink -> neon red, interpolated smoothly by value.
 # Args: value, green_at, orange_at, red_at
 gradient_color() {
   awk -v u="$1" -v g_at="$2" -v o_at="$3" -v r_at="$4" 'BEGIN {
-    gr=0;   gg=200; gb=0
-    orr=255; org=135; orb=0
-    rr=255; rg=0;   rb=0
+    gr=3;   gg=237; gb=249
+    orr=255; org=46;  orb=151
+    rr=254; rg=68;   rb=80
     if (u <= g_at) { r=gr; g=gg; b=gb }
     else if (u < o_at) {
       t = (u-g_at) / (o_at-g_at)
