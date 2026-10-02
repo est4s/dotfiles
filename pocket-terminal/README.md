@@ -4,7 +4,7 @@ Arrow-key launcher menu for Termux on the phone. Opens when Termux
 starts:
 
 ```
-  Termux · Debian (Terminal, Claude Code, Games) · System · Exit
+  Termux · Debian (Terminal, Files, Claude Code, Games) · System · Exit
 ```
 
 - Arrows or `j`/`k` to move, Enter or → to pick, ← / Esc / `q` to go back,
@@ -44,6 +44,23 @@ file (`neon-flap` → "Neon Flap") and run inside Debian. Add one with:
 ```bash
 ln -s /root/games/neonflap/neonflap.py /root/games/neon-flap
 ```
+
+## Files
+
+Debian → Files opens Midnight Commander (`mc`) in `/root`, installing it
+first if needed. The phone keyboard has no F keys, so press **ESC then a
+number** instead (or tap the labels on mc's bottom bar):
+
+| Keys    | Does         | Keys    | Does         |
+|---------|--------------|---------|--------------|
+| ESC 1   | help         | ESC 6   | move/rename  |
+| ESC 2   | user menu    | ESC 7   | new folder   |
+| ESC 3   | view file    | ESC 8   | delete       |
+| ESC 4   | edit file    | ESC 9   | top menu     |
+| ESC 5   | copy         | ESC 0   | quit         |
+
+Select several files with **Ctrl+T**, switch panel with **TAB**, and stack
+the two panels top/bottom (better in portrait) with **Alt+,** (ALT key, then comma).
 
 ## Updating
 

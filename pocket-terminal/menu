@@ -122,8 +122,8 @@ menu_items() { # menu_items <menu>: fills ITEMS (labels) and ACTS (actions)
       ITEMS=(Termux Debian System Exit)
       ACTS=(exit menu:debian menu:system quit_session) ;;
     debian)
-      ITEMS=(Terminal "Claude Code" Games)
-      ACTS=(deb_shell claude menu:games) ;;
+      ITEMS=(Terminal Files "Claude Code" Games)
+      ACTS=(deb_shell files claude menu:games) ;;
     games)
       local f name w label
       for f in "$ROOTFS"/root/games/*; do
@@ -255,6 +255,9 @@ run() { # run <cmd...>: hand the terminal to a program, then come back to the me
 act_none() { :; }
 act_deb_shell() { run "${DEB[@]}" bash -l; }
 act_claude() { run "${DEB[@]}" bash -lc claude; }
+act_files() { # Midnight Commander, installed on first use
+  run "${DEB[@]}" env LANG=C.UTF-8 bash -lc "command -v mc >/dev/null || apt-get install -y mc; cd && mc"
+}
 act_game() { run "${DEB[@]}" env LANG=C.UTF-8 "/root/games/$1"; }
 
 act_update() {
