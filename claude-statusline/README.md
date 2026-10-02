@@ -26,3 +26,14 @@ other machine:
 cd ~/dotfiles && git pull
 bash claude-statusline/install.sh
 ```
+
+## Layouts
+
+The script picks a layout automatically:
+
+- **classic** (default on PC / macOS / Linux): the original single line.
+- **phone** (auto-selected on Termux / Android): Nerd Font icons, a clock,
+  shorter labels under 90 columns, and wraps onto extra lines so it fits
+  portrait screens. Needs a Nerd Font in the terminal.
+
+Force one with `STATUSLINE_STYLE=classic` or `STATUSLINE_STYLE=phone`.
