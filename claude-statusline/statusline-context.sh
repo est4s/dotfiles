@@ -83,13 +83,12 @@ render_classic() {
   printf "${model_part}${SLATE_BLUE}Smart Context: ${used_color}%s${WHITE}/%s ${used_color}(%s%%)%s${RESET}" "$used_fmt" "$total_fmt" "$pct_fmt" "$rate_part"
 }
 
-# Phone layout: Nerd Font icons, clock, and wraps to fit narrow screens
+# Phone layout: Nerd Font icons, wraps to fit narrow screens
 render_phone() {
   # Nerd Font icons (need a Nerd Font in the terminal)
   ICON_MODEL="󰚩"   # robot
   ICON_CTX="󰍛"     # memory chip
   ICON_LIMIT="󰔟"   # hourglass
-  ICON_CLOCK=""    # clock
 
   # Count characters, not bytes, when measuring segment widths
   export LC_ALL=C.UTF-8
@@ -123,8 +122,6 @@ render_phone() {
       segments+=("$(printf "${SLATE_BLUE}${ICON_LIMIT}%s ${five_h_color}%s%%" "$limit_label" "$five_h_pct_fmt")")
     fi
   fi
-
-  segments+=("$(printf "${SLATE_BLUE}${ICON_CLOCK} %s" "$(date +%H:%M)")")
 
   # Pack segments onto lines that fit the terminal width (leave a little margin)
   visible_len() {
