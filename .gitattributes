@@ -1,2 +1,3 @@
 *.sh text eol=lf
 pocket-terminal/menu text eol=lf
+termux/bashrc text eol=lf

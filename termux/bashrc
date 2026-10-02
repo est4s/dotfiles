@@ -1,0 +1,25 @@
+# Shortcuts for the proot-distro Debian install
+alias deb='proot-distro login debian'
+alias debc='proot-distro login debian -- bash -lc claude'
+
+# Arrow-key launcher menu (~/bin/menu). Shows once per Termux session;
+# pick "Termux" or press q to land in this shell, type `menu` to reopen.
+# "Exit" in the menu returns 10, which closes the session.
+menu() { bash ~/bin/menu; (($? == 10)) && exit; }
+if [[ $- == *i* && -z $MENU_SHOWN ]]; then
+  export MENU_SHOWN=1
+  menu
+  echo "Shortcuts: menu | deb | debc | exit"
+  echo
+fi
+
+# eza: modern ls with Nerd Font icons (pkg install eza)
+if command -v eza >/dev/null; then
+  alias ls='eza --icons=auto --group-directories-first'
+  alias ll='eza -l --icons=auto --group-directories-first --git'
+  alias la='eza -la --icons=auto --group-directories-first --git'
+  alias tree='eza --tree --icons=auto'
+fi
+
+# Starship prompt (pkg install starship)
+command -v starship >/dev/null && eval "$(starship init bash)"
