@@ -1,7 +1,6 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # Pocket Terminal: launcher menu for Termux.
 # Keys: arrows / j k move, Enter / → pick, ← / Esc / q back, 1-9 jump.
-# Touch: tap an item to pick it, tap the hint line to go back.
 # Games: every file in Debian's /root/games shows up under Games, named after
 #   the file (neon-flap → "Neon Flap"). Add one with: ln -s /path/to/game /root/games/my-game
 # The boot splash plays once per Termux session; --boot / --no-boot force it.
@@ -14,7 +13,6 @@ STATE=$STATE_DIR/state
 THEMES=(neon amber phosphor)
 export LC_CTYPE=C.UTF-8  # so ${#str} counts characters, not bytes
 ITEM_W=26                 # width of a menu row (" ▶ 1. " + 20-char label)
-ITEM_TOP=6                # screen row of the first menu item (see draw)
 
 # Debian rootfs as seen from Termux (the path differs between proot-distro versions)
 ROOTFS=$MENU_ROOTFS
@@ -28,8 +26,6 @@ fi
 # Plain escape codes instead of tput (Termux has no tput without ncurses-utils)
 cursor_hide() { printf '\e[?25l'; }
 cursor_show() { printf '\e[?25h'; }
-mouse_on() { printf '\e[?1000h\e[?1006h'; }   # SGR mouse reporting: taps arrive as keys
-mouse_off() { printf '\e[?1000l\e[?1006l'; }
 clear_screen() { printf '\e[H\e[2J'; }
 flush_input() { local _; while IFS= read -rsn1 -t 0.01 _; do :; done; }
 term_cols() { # sets COLS to the terminal width (fallback 56, the phone portrait width)
@@ -156,7 +152,7 @@ center_len() { # center_len <visible-length> <string>: center a string with colo
 }
 TITLE_TEXT="▓▒░ P O C K E T  T E R M I N A L ░▒▓"
 
-draw() { # draw <menu> <selected-index> <breadcrumb>   (rows must match ITEM_TOP)
+draw() { # draw <menu> <selected-index> <breadcrumb>
   local i n=${#ITEMS[@]} row
   local pad=$(((COLS - ITEM_W) / 2)); ((pad < 0)) && pad=0
   clear_screen; echo                          # row 1
@@ -250,7 +246,7 @@ RAN=
 run() { # run <cmd...>: hand the terminal to a program, then come back to the menu
   RAN=1
   if [[ -n $MENU_DRYRUN ]]; then echo "RUN: $*"; return; fi
-  mouse_off; cursor_show; clear_screen
+  cursor_show; clear_screen
   "$@"
   flush_input
 }
@@ -323,7 +319,7 @@ act_edit() { # open this script in an editor, then reload it if it still parses
     run "$e" "$0"
     [[ -n $MENU_DRYRUN ]] && return
     if bash -n "$0" 2>/dev/null; then
-      mouse_off; cursor_show
+      cursor_show
       exec bash "$0" --no-boot
     fi
     message "Edit menu" "Syntax error: changes load next time"
@@ -333,23 +329,13 @@ act_edit() { # open this script in an editor, then reload it if it still parses
 }
 
 # --- input -----------------------------------------------------------------
-readkey() { # sets KEY to up/down/enter/back/quit/<digit>/tap/tick/other (tap sets MX MY)
-  local k rest c seq b x y
+readkey() { # sets KEY to up/down/enter/back/quit/<digit>/tick/other
+  local k rest
   IFS= read -rsn1 -t 1 k
   case $? in 0) ;; 1) KEY=quit; return ;; *) KEY=tick; return ;; esac
   if [[ $k == $'\e' ]]; then
     IFS= read -rsn2 -t 0.05 rest
     case $rest in
-      '[<') # SGR mouse: ESC [ < button ; x ; y (M = press, m = release)
-        while IFS= read -rsn1 -t 0.05 c; do seq+=$c; [[ $c == [Mm] ]] && break; done
-        IFS=';' read -r b x y <<<"${seq%[Mm]}"
-        KEY=other
-        [[ $seq == *M ]] || return
-        case $b in
-          0) KEY=tap MX=$x MY=$y ;;
-          64) KEY=up ;;          # scroll / swipe
-          65) KEY=down ;;
-        esac ;;
       '[A' | OA) KEY=up ;;
       '[B' | OB) KEY=down ;;
       '[C' | OC) KEY=enter ;;
@@ -384,7 +370,7 @@ show() { # show <menu> <breadcrumb>
     if [[ $drawn != "$sel:$COLS" ]]; then
       menu_items "$name"; n=${#ITEMS[@]}
       ((sel < n)) || sel=0
-      cursor_hide; mouse_on
+      cursor_hide
       draw "$name" "$sel" "$crumb"
       drawn=$sel:$COLS
     fi
@@ -395,12 +381,6 @@ show() { # show <menu> <breadcrumb>
       back) [[ $name == main ]] || return 0 ;;
       quit) [[ $name == main ]] && return 1 || return 0 ;;
       [1-9]) ((KEY <= n)) && { sel=$((KEY - 1)); KEY=enter; } ;;
-      tap)
-        if ((MY >= ITEM_TOP && MY < ITEM_TOP + n)); then
-          sel=$((MY - ITEM_TOP)); KEY=enter
-        elif ((MY == ITEM_TOP + n + 1)) && [[ $name != main ]]; then
-          return 0               # tapped the "← back" hint
-        fi ;;
     esac
     [[ $KEY == enter ]] || continue
     ST[sel_$name]=$sel; save_state
@@ -419,7 +399,7 @@ show() { # show <menu> <breadcrumb>
 
 load_state
 set_theme "${ST[theme]:-neon}"
-trap 'mouse_off; cursor_show; printf "\e[0m"' EXIT
+trap 'cursor_show; printf "\e[0m"' EXIT
 
 # Splash once per Termux session: remember the parent shell's PID
 BOOT_MARK=${TMPDIR:-/tmp}/pocket-terminal-boot-$PPID
@@ -435,6 +415,6 @@ esac
 
 show main ""
 rc=$?
-mouse_off; cursor_show; clear_screen
+cursor_show; clear_screen
 ((rc == 2)) && exit 10
 exit 0

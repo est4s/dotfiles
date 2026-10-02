@@ -1,6 +1,6 @@
 # Pocket Terminal
 
-Arrow-key / tap launcher menu for Termux on the phone. Opens when Termux
+Arrow-key launcher menu for Termux on the phone. Opens when Termux
 starts:
 
 ```
@@ -8,7 +8,7 @@ starts:
 ```
 
 - Arrows or `j`/`k` to move, Enter or → to pick, ← / Esc / `q` to go back,
-  number keys jump straight to an item. Tapping an item picks it.
+  number keys jump straight to an item.
 - Remembers the last pick in each menu and the chosen theme
   (`~/.local/state/pocket-terminal/state`).
 - Status bar (time, Debian installed, free storage, uptime), boot splash
