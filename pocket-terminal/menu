@@ -128,6 +128,7 @@ menu_items() { # menu_items <menu>: fills ITEMS (labels) and ACTS (actions)
       local f name w label
       for f in "$ROOTFS"/root/games/*; do
         [[ -e $f || -L $f ]] || continue   # links point into Debian, so may look dangling here
+        [[ -d $f && ! -L $f ]] && continue  # game source folders live here too
         name=${f##*/} label=
         for w in ${name//[-_.]/ }; do
           [[ $w == py || $w == sh ]] && continue

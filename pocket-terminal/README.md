@@ -42,7 +42,7 @@ Every file in Debian's `/root/games/` is listed under Games, named after the
 file (`neon-flap` → "Neon Flap") and run inside Debian. Add one with:
 
 ```bash
-ln -s /root/neonflap/neonflap.py /root/games/neon-flap
+ln -s /root/games/neonflap/neonflap.py /root/games/neon-flap
 ```
 
 ## Updating
